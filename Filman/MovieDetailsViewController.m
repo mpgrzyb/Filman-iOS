@@ -12,26 +12,12 @@
 @interface MovieDetailsViewController ()
 @property (nonatomic, strong) NSURLConnection *conn;
 -(void) showMovieDetails;
--(void) updateSizeOfElements;
--(void) refreshElements;
--(void) updateActivityIndicatorPosition;
-
-@property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (strong, nonatomic) IBOutlet UIView *contentView;
 @property (strong, nonatomic) IBOutlet UILabel *descriptionLabel;
 
 
 @end
 
 @implementation MovieDetailsViewController
-
--(void) viewDidLayoutSubviews{
-    [super viewDidLayoutSubviews];
-    [self.scrollView layoutIfNeeded];
-    self.scrollView.contentSize = self.contentView.bounds.size;
-    
-}
-
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -48,14 +34,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self updateActivityIndicatorPosition];
-    
-    [self.contentView setHidden:YES];
-    self.scrollView.autoresizesSubviews = YES;
-    self.scrollView.contentMode = UIViewContentModeScaleToFill;
-    self.contentView.autoresizesSubviews = YES;
-    self.contentView.contentMode = UIViewContentModeScaleToFill;
-    
 //    self.date = @"2013-12-29";
 //    self.selectedCity = @"Radom";
 //    self.idMovie = @"6168";
@@ -101,7 +79,6 @@
     [self.movie setGenre:[movieData objectForKey:@"gatunek"]];
     [self.movie setTime:[movieData objectForKey:@"czas_trwania"]];
     [self.movie setReleaseDate:[movieData objectForKey:@"rok_produkcji"]];
-    [self.movie setCast:[movieData objectForKey:@"obsada"]];
     [self.movie setDescription:[movieData objectForKey:@"opis"]];
 
     
@@ -118,47 +95,9 @@
     [self.genres setText:self.movie.genre];
     [self.runtime setText:self.movie.time];
     [self.releaseDate setText:self.movie.releaseDate];
-    [self.cast setText:self.movie.cast];
     [self.description setText:self.movie.description];
     if ([self.description.text length] == 0) {
         [self.descriptionLabel setHidden:YES];
     }
-    [self updateSizeOfElements];
-    
-    [self.contentView setHidden:NO];
 }
-
-# pragma mark - Dynamically update size and posiotion of elements
-
--(void) updateSizeOfElements{
-    [self refreshElements];
-    float heightOfAllElemets = self.description.frame.origin.y + self.description.frame.size.height + [[self.navigationController navigationBar] frame].size.height + self.cast.frame.size.height + self.movieTitle.frame.size.height + 70;
-    [self.scrollView setContentSize:(CGSizeMake(self.scrollView.frame.size.width, heightOfAllElemets))];
-    [self refreshElements];
-}
-
--(void) refreshElements{
-    self.movieTitle.lineBreakMode = NSLineBreakByWordWrapping;
-    self.movieTitle.autoresizesSubviews = YES;
-    self.movieTitle.numberOfLines = 0;
-    [self.movieTitle sizeToFit];
-    
-    self.cast.lineBreakMode = NSLineBreakByWordWrapping;
-    self.cast.autoresizesSubviews = YES;
-    self.cast.numberOfLines = 0;
-    [self.cast sizeToFit];
-    
-    self.description.lineBreakMode = NSLineBreakByTruncatingTail;
-    self.description.autoresizesSubviews = YES;
-    self.description.numberOfLines = 20;
-    [self.description sizeToFit];
-}
-
--(void) updateActivityIndicatorPosition{
-    float halfOfScreen = ([UIScreen mainScreen].bounds.size.height/2)-(self.activityIndicator.frame.size.height/2);
-    [self.activityIndicator setFrame:CGRectMake(self.activityIndicator.frame.origin.x, halfOfScreen, self.activityIndicator.frame.size.width, self.activityIndicator.frame.size.height)];
-    [self.message setFrame:CGRectMake(self.message.frame.origin.x, halfOfScreen, self.message.frame.size.width, self.message.frame.size.height)];
-}
-
-
 @end

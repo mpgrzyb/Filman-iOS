@@ -19,7 +19,6 @@
 @property (strong, nonatomic) IBOutlet UILabel *genres;
 @property (strong, nonatomic) IBOutlet UILabel *runtime;
 @property (strong, nonatomic) IBOutlet UILabel *releaseDate;
-@property (strong, nonatomic) IBOutlet UILabel *cast;
 @property (strong, nonatomic) IBOutlet UILabel *description;
 
 @property (strong, nonatomic) NSString *idMovie;
