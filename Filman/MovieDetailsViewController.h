@@ -25,6 +25,7 @@
 @property (strong, nonatomic) NSString *selectedCity;
 @property (strong, nonatomic) NSString *date;
 @property (strong, nonatomic) Movie *movie;
+@property (strong, nonatomic) IBOutlet UIImageView *poster;
 
 -(void) downloadMovieDetails;
 @end

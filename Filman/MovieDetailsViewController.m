@@ -13,6 +13,7 @@
 @property (nonatomic, strong) NSURLConnection *conn;
 -(void) showMovieDetails;
 @property (strong, nonatomic) IBOutlet UILabel *descriptionLabel;
+@property (strong, nonatomic) IBOutlet UIView *waitView;
 
 
 @end
@@ -39,10 +40,7 @@
 //    self.idMovie = @"6168";
 //    self.idMovie = @"6817";
     
-    [self.activityIndicator setHidden:NO];
     [self.activityIndicator startAnimating];
-    [self.message setText:@"Proszę czekać..."];
-    [self.message setHidden:NO];
     self.movie = [[Movie alloc] init];
     [self downloadMovieDetails];
 }
@@ -80,15 +78,20 @@
     [self.movie setTime:[movieData objectForKey:@"czas_trwania"]];
     [self.movie setReleaseDate:[movieData objectForKey:@"rok_produkcji"]];
     [self.movie setDescription:[movieData objectForKey:@"opis"]];
+    [self.movie setPosterURL:[movieData objectForKey:@"plakat"]];
 
-    
-    [self.activityIndicator stopAnimating];
-    [self.message setHidden:YES];
-    [self.activityIndicator setHidden:YES];
     [self showMovieDetails];
+    [self.waitView setHidden:YES];
+    [self.activityIndicator stopAnimating];
 }
 
 -(void) showMovieDetails{
+    
+    NSURL *posterURL = [[NSURL alloc] initWithString:self.movie.posterURL];
+    NSData *posterData = [[NSData alloc] initWithContentsOfURL:posterURL];
+    UIImage *image = [[UIImage alloc] initWithData:posterData];
+    [self.poster setImage:image];
+    
     [self.movieTitle setText:self.movie.title];
     [self.rate setText:self.movie.rate];
     [self.director setText:self.movie.director];
