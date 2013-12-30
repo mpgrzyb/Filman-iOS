@@ -15,6 +15,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *descriptionLabel;
 @property (strong, nonatomic) IBOutlet UIView *waitView;
 @property (strong, nonatomic) IBOutlet UIView *alphaView;
+@property (strong, nonatomic) IBOutlet UIView *mainView;
 
 @end
 
@@ -35,6 +36,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    [self.mainView setBackgroundColor:[UIColor colorWithRed:123 green:123 blue:12 alpha:123]];
     [self.activityIndicator startAnimating];
     self.movie = [[Movie alloc] init];
     [self downloadMovieDetails];
@@ -98,6 +101,7 @@
     [self.runtime setText:self.movie.time];
     [self.releaseDate setText:self.movie.releaseDate];
     [self.description setText:self.movie.description];
+    [self.mainView setBackgroundColor:[UIColor blackColor]];
     if ([self.description.text length] == 0) {
         [self.descriptionLabel setHidden:YES];
     }

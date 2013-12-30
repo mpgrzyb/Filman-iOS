@@ -34,7 +34,7 @@
 {
     [super viewDidLoad];
     [self createPickerView];
-    self.cities = [NSArray arrayWithObjects:@"Radom", @"Warszawa", @"Łódź", nil];
+    self.cities = [NSArray arrayWithObjects:@"Białystok",@"Bielsko-Biała",@"Bydgoszcz",@"Bytom",@"Częstochowa",@"Dąbrowa Górnicza",@"Elbląg",@"Gdańsk",@"Gdynia",@"Gniezno",@"Gliwice",@"Grudziądz",@"Kalisz",@"Katowice",@"Kielce",@"Konin",@"Koszalin",@"Kraków",@"Legnica",@"Lubin",@"Lublin",@"Łódź",@"Olsztyn",@"Opole",@"Piła",@"Piotrków Trybunalski",@"Płock",@"Poznań",@"Radom",@"Ruda Śląska",@"Rumia",@"Rybnik",@"Rzeszów",@"Słupsk",@"Sopot",@"Sosnowiec",@"Szczecin",@"Tczew",@"Toruń",@"Warszawa",@"Wałbrzych",@"Wrocław",@"Zabrze",@"Zielona Góra",nil];
 }
 
 - (void)didReceiveMemoryWarning
