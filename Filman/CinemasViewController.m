@@ -33,17 +33,15 @@
 {
     [super viewDidLoad];
     self.title = @"Wybór kina";
-    
     [self.tableView setHidden:YES];
     [self.activityIndicator startAnimating];
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     self.selectedCity = [userDefaults objectForKey:@"city"];
-    
+
     //    Sprawdzenie czy jest już wybrane wcześniej przez użytkownika miasto czy nie
     if([self.selectedCity length] == 0){
         [self performSegueWithIdentifier:@"pickCity" sender:self];
     };
-    
     [self downloadCinemasList:self.selectedCity];
     [self.cityButton setTitle:self.selectedCity];
     self.responseData = [[NSMutableData alloc] init];
@@ -82,7 +80,6 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *cellIdentifier = @"Cell";
-    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
     if(cell == nil)
@@ -94,7 +91,7 @@
     return cell;
 }
 
-#pragma mark - Download Cinemas
+#pragma mark - Download Cinemas POST METHOD
 
 -(void) downloadCinemasList:(NSString*) city{
     NSString *post = [NSString stringWithFormat:@"&miasto=%@", [city stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];

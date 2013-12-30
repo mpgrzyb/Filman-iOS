@@ -14,7 +14,7 @@
 -(void) showMovieDetails;
 @property (strong, nonatomic) IBOutlet UILabel *descriptionLabel;
 @property (strong, nonatomic) IBOutlet UIView *waitView;
-
+@property (strong, nonatomic) IBOutlet UIView *alphaView;
 
 @end
 
@@ -35,11 +35,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-//    self.date = @"2013-12-29";
-//    self.selectedCity = @"Radom";
-//    self.idMovie = @"6168";
-//    self.idMovie = @"6817";
-    
     [self.activityIndicator startAnimating];
     self.movie = [[Movie alloc] init];
     [self downloadMovieDetails];
@@ -87,10 +82,14 @@
 
 -(void) showMovieDetails{
     
-    NSURL *posterURL = [[NSURL alloc] initWithString:self.movie.posterURL];
-    NSData *posterData = [[NSData alloc] initWithContentsOfURL:posterURL];
-    UIImage *image = [[UIImage alloc] initWithData:posterData];
-    [self.poster setImage:image];
+    dispatch_queue_t downloadingPhoto = dispatch_queue_create("downloading events", NULL);
+    dispatch_sync(downloadingPhoto, ^{
+        NSURL *posterURL = [[NSURL alloc] initWithString:self.movie.posterURL];
+        NSData *posterData = [[NSData alloc] initWithContentsOfURL:posterURL];
+        UIImage *image = [[UIImage alloc] initWithData:posterData];
+        [self.poster setImage:image];
+    });
+    [self.alphaView setHidden:NO];
     
     [self.movieTitle setText:self.movie.title];
     [self.rate setText:self.movie.rate];

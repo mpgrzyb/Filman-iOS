@@ -7,9 +7,10 @@
 //
 
 #import "TVViewController.h"
+#import "MoviesViewController.h"
 
 @interface TVViewController ()
-
+@property (nonatomic, strong) NSURLConnection *conn;
 @end
 
 @implementation TVViewController
@@ -26,11 +27,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-//    self.tvChannelsList = self.downladTV;
-    if ([self.tvChannelsList count] == 0) {
-        [self.message setText:@"Brak wyników..."];
-        self.tvChannelsTable.hidden = YES;
-    }
+    self.responseData = [[NSMutableData alloc] init];
+    [self downloadTVChannels];
 }
 
 -(void) viewWillAppear:(BOOL)animated{
@@ -41,10 +39,16 @@
     self.navigationItem.hidesBackButton = YES;
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+#pragma mark - Prepere for segue
+
+-(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    if([segue.identifier isEqualToString:@"goToMovieListTV"]){
+        MoviesViewController *moviesViewController = [segue destinationViewController];
+        NSIndexPath *indexPath = [self.tvChannelsTable indexPathForSelectedRow];
+        NSDictionary *tmpDictionary = [self.tvChannelsList objectAtIndex:indexPath.row];
+        [moviesViewController setSelectedCity:@"tv"];
+        [moviesViewController setCinemaName:[tmpDictionary objectForKey:@"nazwa_kanalu"]];
+    }
 }
 
 #pragma mark - Cinemas TableView
@@ -62,49 +66,46 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSString *identifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
-    
-    cell.textLabel.text = [self.tvChannelsList objectAtIndex:indexPath.row];
+    NSDictionary *tmpDictionary = [self.tvChannelsList objectAtIndex:indexPath.row];
+    cell.textLabel.text = [tmpDictionary objectForKey:@"nazwa_kanalu"];
     return cell;
 }
 
-#pragma mark - Download TV Channels
+#pragma mark - Download TV Channels GET METHOD
 
--(void) downloadTVChannels:(NSString*) data{
-//    //    NSString *post = [NSString stringWithFormat:@"&miasto=%@", city];
-//    NSString *post = [NSString stringWithFormat:@"&data=%@", [city stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-//    
-//    NSData *postData = [post dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-//    NSString *postLength = [NSString stringWithFormat:@"%d",[postData length]];
-//    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-//    [request setURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://filman.pl/ios/cinemas/"]]];
-//    [request setHTTPMethod:@"POST"];
-//    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
-//    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Current-Type"];
-//    [request setHTTPBody:postData];
-//    self.conn = [[NSURLConnection alloc]initWithRequest:request delegate:self];
+-(void) downloadTVChannels{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    self.selectedCity = [userDefaults objectForKey:@"city"];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://filman.pl/ios/channels/"]]];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Current-Type"];
+    self.conn = [[NSURLConnection alloc]initWithRequest:request delegate:self];
 }
 
 #pragma mark - Server Connection
 
-//- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-//{
-//}
-//
-//- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-//{
-//    [self.responseData appendData:data];
-//    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:nil];
-//    self.cinemasList = [dictionary objectForKey:@"cinemas"];
-//    [self.cinemasTable reloadData];
-//    
-//    if ([self.cinemasList count] == 0) {
-//        [self.message setText:@"Brak wyników..."];
-//    }
-//    else{
-//        [self.tableView setHidden:NO];
-//    }
-//    [self.activityIndicator stopAnimating];
-//}
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    [self.responseData appendData:data];
+    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:nil];
+    
+    self.tvChannelsList = [dictionary objectForKey:@"channels"];
+
+    if ([self.tvChannelsList count] == 0) {
+        [self.message setText:@"Brak wyników..."];
+        self.tvChannelsTable.hidden = YES;
+    }else{
+        [self.tvChannelsTable reloadData];
+        [self.message setHidden:YES];
+        [self.activityIndicator stopAnimating];
+        [self.activityIndicator setHidden:YES];
+    }
+}
 
 
 @end

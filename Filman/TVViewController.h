@@ -9,8 +9,14 @@
 #import <UIKit/UIKit.h>
 
 @interface TVViewController : UIViewController <UITableViewDataSource, UITableViewDataSource>
+
 @property (strong, nonatomic) IBOutlet UITableView *tvChannelsTable;
-@property (strong, nonatomic) NSArray *tvChannelsList;
 @property (strong, nonatomic) IBOutlet UILabel *message;
--(void) downloadTVChannels:(NSString*) data;
+
+@property (strong, nonatomic) NSArray *tvChannelsList;
+@property (strong, nonatomic) NSString *selectedCity;
+@property (nonatomic, retain) NSMutableData* responseData;
+-(void) downloadTVChannels;
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+
 @end
