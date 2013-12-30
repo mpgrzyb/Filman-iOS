@@ -14,9 +14,11 @@
 -(void) showMovieDetails;
 -(void) updateSizeOfElements;
 -(void) refreshElements;
+-(void) updateActivityIndicatorPosition;
 
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (strong, nonatomic) IBOutlet UIView *contentView;
+@property (strong, nonatomic) IBOutlet UILabel *descriptionLabel;
 
 
 @end
@@ -46,15 +48,17 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self updateActivityIndicatorPosition];
     
+    [self.contentView setHidden:YES];
     self.scrollView.autoresizesSubviews = YES;
     self.scrollView.contentMode = UIViewContentModeScaleToFill;
     self.contentView.autoresizesSubviews = YES;
     self.contentView.contentMode = UIViewContentModeScaleToFill;
     
-    self.date = @"2013-12-29";
-    self.selectedCity = @"Radom";
-    self.idMovie = @"6168";
+//    self.date = @"2013-12-29";
+//    self.selectedCity = @"Radom";
+//    self.idMovie = @"6168";
 //    self.idMovie = @"6817";
     
     [self.activityIndicator setHidden:NO];
@@ -116,12 +120,19 @@
     [self.releaseDate setText:self.movie.releaseDate];
     [self.cast setText:self.movie.cast];
     [self.description setText:self.movie.description];
+    if ([self.description.text length] == 0) {
+        [self.descriptionLabel setHidden:YES];
+    }
     [self updateSizeOfElements];
+    
+    [self.contentView setHidden:NO];
 }
+
+# pragma mark - Dynamically update size and posiotion of elements
 
 -(void) updateSizeOfElements{
     [self refreshElements];
-    float heightOfAllElemets = self.description.frame.origin.y + self.description.frame.size.height + [[self.navigationController navigationBar] frame].size.height + self.cast.frame.size.height;
+    float heightOfAllElemets = self.description.frame.origin.y + self.description.frame.size.height + [[self.navigationController navigationBar] frame].size.height + self.cast.frame.size.height + self.movieTitle.frame.size.height + 70;
     [self.scrollView setContentSize:(CGSizeMake(self.scrollView.frame.size.width, heightOfAllElemets))];
     [self refreshElements];
 }
@@ -141,6 +152,12 @@
     self.description.autoresizesSubviews = YES;
     self.description.numberOfLines = 20;
     [self.description sizeToFit];
+}
+
+-(void) updateActivityIndicatorPosition{
+    float halfOfScreen = ([UIScreen mainScreen].bounds.size.height/2)-(self.activityIndicator.frame.size.height/2);
+    [self.activityIndicator setFrame:CGRectMake(self.activityIndicator.frame.origin.x, halfOfScreen, self.activityIndicator.frame.size.width, self.activityIndicator.frame.size.height)];
+    [self.message setFrame:CGRectMake(self.message.frame.origin.x, halfOfScreen, self.message.frame.size.width, self.message.frame.size.height)];
 }
 
 
